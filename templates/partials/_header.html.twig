@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">G'artllery</a>
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Home
+                        <span class="visually-hidden">(current)</span>
+                    </a>
+                </li>
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_gallery') }}">Mes galleries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_user_profile') }}">Mon compte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                    </li>
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <button class="btn btn-secondary"><a href="/api">API Platform</a></button>
+                        {#<button class="btn btn-secondary my-2 my-sm-0"><a href="{{ path('admin_index') }}">Admin</a></button>#}
+                    {% endif %}
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/connection">se connecter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inscription">s'inscrire</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-sm-2" type="text" placeholder="Search">
+                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
