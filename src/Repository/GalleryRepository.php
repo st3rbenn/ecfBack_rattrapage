@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Gallery;
+use App\Form\GalleryType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GalleryRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Gallery::class);
@@ -41,8 +43,11 @@ class GalleryRepository extends ServiceEntityRepository
 
     public function listOfGalleries(): array
     {
+
         return $this->createQueryBuilder('g')
             ->select('g.id, g.name, g.description')
+            ->where('g.user = :user')
+            ->setParameter('user', )
             ->getQuery()
             ->getResult()
         ;

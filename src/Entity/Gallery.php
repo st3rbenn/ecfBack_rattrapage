@@ -39,8 +39,9 @@ class Gallery
      */
     private $is_real;
 
+
     /**
-     * @ORM\OneToMany(targetEntity=GalleryItem::class, mappedBy="gallery")
+     * @ORM\OneToMany(targetEntity=GalleryItem::class, mappedBy="gallery", orphanRemoval=true)
      */
     private $galleryItems;
 
@@ -147,5 +148,10 @@ class Gallery
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getUserID(): ?int
+    {
+        return $this->user->getId();
     }
 }

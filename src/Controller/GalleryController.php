@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Gallery;
 use App\Entity\GalleryItem;
+use App\Entity\User;
 use App\Form\GalleryItemType;
 use App\Form\GalleryType;
 use App\Repository\GalleryItemRepository;
 use App\Repository\GalleryRepository;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,21 +23,33 @@ class GalleryController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/gallery", name="app_gallery")
      */
-    public function index(GalleryRepository $galleryRepository): Response
+    public function index(
+        GalleryRepository $galleryRepository,
+        UserRepository $userRepository
+    ): Response
     {
         $galleries = $galleryRepository->listOfGalleries();
+        $user = $userRepository->find($this->getUser());
         return $this->render('gallery/index.html.twig', [
             'galleries' => $galleries,
+            'user' => $user,
         ]);
     }
 
     /**
      * @IsGranted("ROLE_USER")
-     * @Route("/gallery/add", name="app_gallery_add")
+     * @Route("/gallery/add", name="app_gallery_add", requirements={"id"="\d+"})
      */
-    public function addGallery(Request $request, GalleryRepository $galleryRepository): Response
+    public function addGallery(
+        Request $request,
+        GalleryRepository $galleryRepository,
+        UserRepository $userRepository,
+        int $id
+    ): Response
     {
         $Gallery = new Gallery();
+        $Gallery->setUser($userRepository->find($id));
+
         $form = $this->createForm(GalleryType::class, $Gallery);
 
         $form->handleRequest($request);
@@ -47,6 +61,7 @@ class GalleryController extends AbstractController
         }
 
         return $this->render('gallery/add_gallery.html.twig', [
+            'id' => $Gallery->getId(),
             'AddGalleryForm' => $form->createView(),
         ]);
     }
@@ -55,7 +70,11 @@ class GalleryController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/gallery/{id}/edit", name="app_gallery_edit")
      */
-    public function editGallery(Gallery $Gallery, Request $request, GalleryRepository $galleryRepository): Response
+    public function editGallery(
+        Gallery $Gallery,
+        Request $request,
+        GalleryRepository $galleryRepository
+    ): Response
     {
         $form = $this->createForm(GalleryType::class, $Gallery);
 
@@ -76,7 +95,10 @@ class GalleryController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/gallery/{id}/delete", name="app_gallery_delete", requirements={"id"="\d+"})
      */
-    public function deleteGallery(int $id, GalleryRepository $galleryRepository): Response
+    public function deleteGallery(
+        int $id,
+        GalleryRepository $galleryRepository
+    ): Response
     {
         $gallery = $galleryRepository->find($id);
         $galleryRepository->remove($gallery);
@@ -88,11 +110,30 @@ class GalleryController extends AbstractController
 
     /**
      * @IsGranted("ROLE_USER")
+     * @Route("/gallery/{id}", name="app_gallery_show", requirements={"id"="\d+"})
+     */
+    public function showGallery(
+        int $id,
+        GalleryRepository $galleryRepository
+    ): Response
+    {
+        $gallery = $galleryRepository->find($id);
+        return $this->render('gallery/show_gallery.html.twig',[
+            'gallery' => $gallery
+        ]);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
      * @Route("/gallery/{id}/art/add", name="app_gallery_add_art")
      *
      * @ParamConverter("gallery", options={"mapping": {"id": "id"}})
      */
-    public function addArt(Gallery $gallery, Request $request, GalleryItemRepository $galleryItemRepository): Response
+    public function addArt(
+        Gallery $gallery,
+        Request $request,
+        GalleryItemRepository $galleryItemRepository
+    ): Response
     {
         $galleryItem = new GalleryItem();
         $galleryItem->setGallery($gallery);
@@ -117,7 +158,12 @@ class GalleryController extends AbstractController
      * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
      * @ParamConverter("galleryItem", options={"mapping": {"galleryItem_id": "id"}})
      */
-    public function editArt(int $gallery_id ,int $galleryItem_id ,Request $request, GalleryItemRepository $galleryItemRepository): Response
+    public function editArt(
+        int $gallery_id ,
+        int $galleryItem_id ,
+        Request $request,
+        GalleryItemRepository $galleryItemRepository
+    ): Response
     {
         $galleryItem = $galleryItemRepository->find($galleryItem_id);
         $form = $this->createForm(GalleryItemType::class, $galleryItem);
@@ -141,7 +187,10 @@ class GalleryController extends AbstractController
      * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
      * @ParamConverter("galleryItem", options={"mapping": {"galleryItem_id": "id"}})
      */
-    public function deleteArt(GalleryItem $galleryItem, GalleryItemRepository $galleryItemRepository): Response
+    public function deleteArt(
+        GalleryItem $galleryItem,
+        GalleryItemRepository $galleryItemRepository
+    ): Response
     {
         $galleryItemRepository->remove($galleryItem);
 
