@@ -40,6 +40,12 @@ class GalleryItemRepository extends ServiceEntityRepository
         }
     }
 
+    public function listOfGalleryItems(): array
+    {
+        return $this->findAll()
+        ;
+    }
+
 //    /**
 //     * @return GalleryItem[] Returns an array of GalleryItem objects
 //     */

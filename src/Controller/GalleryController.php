@@ -29,26 +29,23 @@ class GalleryController extends AbstractController
     ): Response
     {
         $galleries = $galleryRepository->listOfGalleries();
-        $user = $userRepository->find($this->getUser());
         return $this->render('gallery/index.html.twig', [
             'galleries' => $galleries,
-            'user' => $user,
         ]);
     }
 
     /**
      * @IsGranted("ROLE_USER")
-     * @Route("/gallery/add", name="app_gallery_add", requirements={"id"="\d+"})
+     * @Route("/gallery/add", name="app_gallery_add")
      */
     public function addGallery(
         Request $request,
         GalleryRepository $galleryRepository,
-        UserRepository $userRepository,
-        int $id
+        UserRepository $userRepository
     ): Response
     {
         $Gallery = new Gallery();
-        $Gallery->setUser($userRepository->find($id));
+        $Gallery->setUser($userRepository->find($this->getUser()));
 
         $form = $this->createForm(GalleryType::class, $Gallery);
 
@@ -113,12 +110,13 @@ class GalleryController extends AbstractController
      * @Route("/gallery/{id}", name="app_gallery_show", requirements={"id"="\d+"})
      */
     public function showGallery(
-        int $id,
-        GalleryRepository $galleryRepository
+        GalleryItemRepository $galleryItemRepository,
+        Gallery $gallery
     ): Response
     {
-        $gallery = $galleryRepository->find($id);
-        return $this->render('gallery/show_gallery.html.twig',[
+        $listOfArts = $galleryItemRepository->listOfGalleryItems();
+        return $this->render('gallery/gallery_art/index.html.twig',[
+            'listOfArts' => $listOfArts,
             'gallery' => $gallery
         ]);
     }
@@ -154,12 +152,11 @@ class GalleryController extends AbstractController
 
     /**
      * @IsGranted("ROLE_USER")
-     * @Route("/gallery/{gallery_id}/art/{galleryItem_id}/edit"), name="app_gallery_edit_art")
+     * @Route("/gallery/{gallery_id}/art/{galleryItem_id}/edit") name="app_gallery_edit_art")
      * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
      * @ParamConverter("galleryItem", options={"mapping": {"galleryItem_id": "id"}})
      */
     public function editArt(
-        int $gallery_id ,
         int $galleryItem_id ,
         Request $request,
         GalleryItemRepository $galleryItemRepository
