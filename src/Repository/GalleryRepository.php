@@ -43,13 +43,7 @@ class GalleryRepository extends ServiceEntityRepository
 
     public function listOfGalleries(): array
     {
-
-        return $this->createQueryBuilder('g')
-            ->select('g.id, g.name, g.description')
-            ->where('g.user = :user')
-            ->setParameter('user', )
-            ->getQuery()
-            ->getResult()
+        return $this->findAll()
         ;
     }
 
