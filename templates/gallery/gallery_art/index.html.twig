@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container mt-5 card">
-        <h1 class="text-dark mb-4">{{ listOfArts[0].gallery.name }}</h1>
+        <h1 class="text-dark mb-4">{{ gallery.name }}</h1>
         {% for g in listOfArts %}
             {% if g.gallery == gallery %}
                 <li class="row mb-4">
@@ -18,5 +18,9 @@
                 <a href="{{ path('app_gallery_delete_art', {'galleryItem_id': g.id, 'gallery_id': gallery.id}) }}" class="btn btn-danger">Supprimer l'oeuvre</a>
             {% endif %}
         {% endfor %}
+
+        <a href="{{ path('app_gallery_add') }}" class="btn btn-secondary">
+          Ajouter une oeuvre
+        </a>
     </div>
 {% endblock %}
