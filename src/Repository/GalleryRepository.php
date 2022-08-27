@@ -43,8 +43,7 @@ class GalleryRepository extends ServiceEntityRepository
 
     public function listOfGalleries(): array
     {
-        return $this->findAll()
-        ;
+        return $this->findAll();
     }
 
 //    /**

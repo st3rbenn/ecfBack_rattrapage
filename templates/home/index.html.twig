@@ -13,9 +13,31 @@
             {{ message }}
         </div>
     {% endfor %}
-    {% if is_granted("ROLE_USER") %}
     <div class="container">
-        <h1 class="fs-4 text-center mt-4">Bienvenue, {{ app.user.userIdentifier }} {{ app.user.id }}</h1>
+        {% if is_granted("ROLE_USER") %}
+            <h1 class="fs-4 text-center mt-4">Bienvenue, {{ app.user.userIdentifier }}</h1>
+        {% endif %}
+        <div class="row gap-3 card mt-4">
+            {% for g in galleries %}
+                    <div class="row mb-4 mt-4">
+                        <div class="col-md-6 align-self-center">
+                            <img src="{{ asset('uploads/images/' ~ g.image) }}" alt="image de la gallerie {{ g.name }}" class="img-fluid card-img">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-body d-flex justify-content-around flex-column align-items-start">
+                                <h2 class="text-dark">{{ g.name }}</h2>
+                                <p class="text-dark">{{ g.description }}</p>
+                                <div class="btn-group">
+                                    <a href="{{ path('app_gallery_show', {'id': g.id}) }}" class="btn btn-primary">Voir la g'Artlery</a>
+                                    {% if g.user == app.user %}
+                                        <a href="{{ path('app_gallery_edit', {'id': g.id}) }}" class="btn btn-warning">Modifier la g'Artlery</a>
+                                        <a href="{{ path('app_gallery_delete', {'id': g.id}) }}" class="btn btn-danger">Supprimer la g'Artlery</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+        </div>
     </div>
-    {% endif %}
 {% endblock %}
