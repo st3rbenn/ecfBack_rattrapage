@@ -10,12 +10,16 @@ use App\Form\GalleryType;
 use App\Repository\GalleryItemRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\UserRepository;
+use App\Service\FileUploader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class GalleryController extends AbstractController
 {
@@ -41,18 +45,26 @@ class GalleryController extends AbstractController
     public function addGallery(
         Request $request,
         GalleryRepository $galleryRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        FileUploader $fileUploader
     ): Response
     {
         $Gallery = new Gallery();
         $Gallery->setUser($userRepository->find($this->getUser()));
-
         $form = $this->createForm(GalleryType::class, $Gallery);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             $galleryRepository->add($Gallery);
+
+            $file = $form['image']->getData();
+            if($file){
+                $fileName = $fileUploader->upload($file);
+                $Gallery->setImage($fileName);
+                $galleryRepository->add($Gallery);
+            }
+
             $this->addFlash('success', 'Votre galerie a bien été créée');
             return $this->redirectToRoute('app_gallery');
         }
@@ -70,7 +82,8 @@ class GalleryController extends AbstractController
     public function editGallery(
         Gallery $Gallery,
         Request $request,
-        GalleryRepository $galleryRepository
+        GalleryRepository $galleryRepository,
+        FileUploader $fileUploader
     ): Response
     {
         $form = $this->createForm(GalleryType::class, $Gallery);
@@ -79,6 +92,14 @@ class GalleryController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $galleryRepository->add($Gallery);
+
+            $file = $form['image']->getData();
+            if($file){
+                $fileName = $fileUploader->upload($file);
+                $Gallery->setImage($fileName);
+                $galleryRepository->add($Gallery);
+            }
+
             $this->addFlash('success', 'Votre galerie a bien été modifiée');
             return $this->redirectToRoute('app_gallery');
         }
@@ -130,7 +151,8 @@ class GalleryController extends AbstractController
     public function addArt(
         Gallery $gallery,
         Request $request,
-        GalleryItemRepository $galleryItemRepository
+        GalleryItemRepository $galleryItemRepository,
+        FileUploader $fileUploader
     ): Response
     {
         $galleryItem = new GalleryItem();
@@ -141,6 +163,14 @@ class GalleryController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $galleryItemRepository->add($galleryItem);
+
+            $file = $form['image']->getData();
+            if($file){
+                $fileName = $fileUploader->upload($file);
+                $galleryItem->setImage($fileName);
+                $galleryItemRepository->add($galleryItem);
+            }
+
             $this->addFlash('success', 'Votre oeuvre a bien été ajoutée');
             return $this->redirectToRoute('app_gallery');
         }
@@ -159,7 +189,8 @@ class GalleryController extends AbstractController
     public function editArt(
         int $galleryItem_id ,
         Request $request,
-        GalleryItemRepository $galleryItemRepository
+        GalleryItemRepository $galleryItemRepository,
+        FileUploader $fileUploader
     ): Response
     {
         $galleryItem = $galleryItemRepository->find($galleryItem_id);
@@ -169,6 +200,14 @@ class GalleryController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $galleryItemRepository->add($galleryItem);
+
+            $file = $form['image']->getData();
+            if($file){
+                $fileName = $fileUploader->upload($file);
+                $galleryItem->setImage($fileName);
+                $galleryItemRepository->add($galleryItem);
+            }
+
             $this->addFlash('success', 'Votre oeuvre a bien été modifiée');
             return $this->redirectToRoute('app_gallery');
         }

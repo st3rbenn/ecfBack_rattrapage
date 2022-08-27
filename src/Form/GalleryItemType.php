@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class GalleryItemType extends AbstractType
 {
@@ -32,12 +33,22 @@ class GalleryItemType extends AbstractType
                 ]
             ])
             ->add('image', FileType::class, [
-                'data_class' => null,
-                'multiple' => false,
                 'required' => false,
+                'data_class' => null,
                 'attr' => [
                     'class' => 'form-control m-2',
-                ]
+                ],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp'
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image',
+                    ])
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'ajouter un art',

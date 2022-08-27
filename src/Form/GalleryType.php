@@ -3,14 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Gallery;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class GalleryType extends AbstractType
@@ -37,12 +38,23 @@ class GalleryType extends AbstractType
                 'required' => false,
             ])
             ->add('image', FileType::class, [
-                'data_class' => null,
-                'multiple' => false,
                 'required' => false,
+                'data_class' => null,
+                'data' => null,
                 'attr' => [
                     'class' => 'form-control m-2',
-                ]
+                ],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp'
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image',
+                    ])
+                ],
             ])
             ->add('description', TextType::class, [
                 'label' => 'description de la collection d\'arts',
