@@ -3,12 +3,29 @@
 {% block title %}Hello UserProfileController!{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-10">
                 <div class="panel panel-default">
-                    <div class="panel-body d-flex flex-column gap-3">
-                        {{ form(editProfile) }}
+                    <div class="panel-heading mb-3">
+                        <h3 class="panel-title">Mon profil</h3>
+                    </div>
+                    <div class="container">
+                        <div class="panel panel-default">
+                           {{ form_start(editProfile) }}
+                                <div class="panel-body d-flex flex-column">
+                                    <label for="username_id" class="form-label">
+                                        nom de compte
+                                        {{ form_widget(editProfile.username, {'attr': {'class': 'form-control mb-2 mt-2', 'value': app.user.userIdentifier}}) }}
+                                    </label>
+                                    <label for="mail_id" class="form-label">
+                                        e-mail
+                                        {{ form_widget(editProfile.email, {'attr': {'class': 'form-control mb-2 mt-2'}}) }}
+                                    </label>
+                                </div>
+                                {{ form_widget(editProfile.submit, {'attr': {'class': 'btn btn-primary mt-3'}}) }}
+                            {{ form_end(editProfile) }}
+                        </div>
                     </div>
                 </div>
             </div>

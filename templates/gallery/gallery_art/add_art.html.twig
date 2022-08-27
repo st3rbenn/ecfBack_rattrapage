@@ -11,7 +11,9 @@
                         <h3 class="panel-title">Ajouté une oeuvre</h3>
                     </div>
                     <div class="panel-body d-flex flex-column gap-3">
-                        {{ form(AddArtForm) }}
+                        {{ form_start(AddArtForm) }}
+                        {{ form_row(AddArtForm.image) }}
+                        {{ form_end(AddArtForm) }}
                     </div>
                 </div>
             </div>
