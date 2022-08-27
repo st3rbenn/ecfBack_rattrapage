@@ -124,7 +124,6 @@ class GalleryController extends AbstractController
     }
 
     /**
-     * @IsGranted("ROLE_USER")
      * @Route("/gallery/{id}", name="app_gallery_show", requirements={"id"="\d+"})
      */
     public function showGallery(
@@ -142,7 +141,6 @@ class GalleryController extends AbstractController
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/gallery/{id}/art/add", name="app_gallery_add_art")
-     *
      * @ParamConverter("gallery", options={"mapping": {"id": "id"}})
      */
     public function addArt(
