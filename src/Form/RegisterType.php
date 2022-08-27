@@ -29,7 +29,7 @@ class RegisterType extends AbstractType
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^\S.{1,50}\S$/',
-                        'message' => 'Le nom de compte doit contenir au moins 3 caractères et ne pas dépasser 50 caractères',
+                        'message' => 'Le nom d\'utilisateur doit contenir au moins 3 caractères et ne pas dépasser 50 caractères',
                     ]),
                 ]
             ])

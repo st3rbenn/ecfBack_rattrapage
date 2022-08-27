@@ -50,9 +50,25 @@ class Gallery
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $updateAt;
+
     public function __construct()
     {
         $this->galleryItems = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
@@ -153,5 +169,29 @@ class Gallery
     public function getUserID(): ?int
     {
         return $this->user->getId();
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdateAt(): ?\DateTimeImmutable
+    {
+        return $this->updateAt;
+    }
+
+    public function setUpdateAt(?\DateTimeImmutable $updateAt): self
+    {
+        $this->updateAt = $updateAt;
+
+        return $this;
     }
 }
