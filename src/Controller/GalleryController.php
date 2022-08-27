@@ -14,12 +14,9 @@ use App\Service\FileUploader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class GalleryController extends AbstractController
 {
@@ -172,7 +169,7 @@ class GalleryController extends AbstractController
             }
 
             $this->addFlash('success', 'Votre oeuvre a bien été ajoutée');
-            return $this->redirectToRoute('app_gallery');
+            return $this->redirectToRoute('app_gallery_show', ['id' => $gallery->getId()]);
         }
 
         return $this->render('/gallery/gallery_art/add_art.html.twig', [
@@ -190,7 +187,8 @@ class GalleryController extends AbstractController
         int $galleryItem_id ,
         Request $request,
         GalleryItemRepository $galleryItemRepository,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
+        Gallery $gallery
     ): Response
     {
         $galleryItem = $galleryItemRepository->find($galleryItem_id);
@@ -209,7 +207,7 @@ class GalleryController extends AbstractController
             }
 
             $this->addFlash('success', 'Votre oeuvre a bien été modifiée');
-            return $this->redirectToRoute('app_gallery');
+            return $this->redirectToRoute('app_gallery_show', ['id' => $gallery->getId()]);
         }
 
         return $this->render('/gallery/gallery_art/edit_art.html.twig', [
@@ -225,13 +223,15 @@ class GalleryController extends AbstractController
      */
     public function deleteArt(
         GalleryItem $galleryItem,
-        GalleryItemRepository $galleryItemRepository
+        GalleryItemRepository $galleryItemRepository,
+        Gallery $gallery
     ): Response
     {
         $galleryItemRepository->remove($galleryItem);
 
         return $this->render('/gallery/gallery_art/delete_art.html.twig',[
-            'galleryItem' => $galleryItem
+            'galleryItem' => $galleryItem,
+            'gallery' => $gallery
         ]);
     }
 }

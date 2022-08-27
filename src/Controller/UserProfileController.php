@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ProfileType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,17 +16,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserProfileController extends AbstractController
 {
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/user/profile", name="app_user_profile")
      */
     public function index(): Response
     {
+        $user = $this->getUser();
+        assert($user instanceof User);
 
         return $this->render('user_profile/index.html.twig', [
-            'app_profile' => 'app_profile'
+            'user' => $user
         ]);
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/user/update", name="app_user_profile_update")
      */
     public function updateAccount(
