@@ -3,6 +3,16 @@
 {% block title %}Hello UserProfileController!{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-10">
@@ -15,21 +25,23 @@
                             <div class="panel-body d-flex flex-column">
                                 <label for="username_id" class="form-label">
                                     nom de compte
-                                    <input type="text" value="{{ user.userIdentifier }}" class="form-control mb-2" id="username_id" disabled>
+                                    <input type="text" value="{{ user.userIdentifier }}" class="form-control mb-2 mt-2" id="username_id" disabled>
                                 </label>
                                 <label for="mail_id" class="form-label">
                                     e-mail
-                                    <input type="email" value="{{ user.email }}" class="form-control mb-2" id="mail_id" disabled>
+                                    <input type="email" value="{{ user.email }}" class="form-control mb-2 mt-2" id="mail_id" disabled>
                                 </label>
-                                <label for="password_id" class="form-labelmt-3">
+                                <label for="password_id" class="form-label mt-3">
                                     mot de passe
-                                    <input type="password" value="{{ user.password }}" class="form-control mb-2 " id="password_id" disabled>
+                                    <input type="password" value="{{ user.password }}" class="form-control mb-2 mt-2" id="password_id" disabled>
                                 </label>
+                                <div class="btn-group gap-3 justify-content-center align-items-center">
+                                    <a href="{{ path('app_user_profile_update') }}" class="btn btn-primary">modifier mon profil</a>
+                                    <a href="{{ path('app_user_profile_update_password') }}" class="btn btn-warning">modifier mon mot de passe</a>
+                                    <a href="{{ path('app_user_profile_delete') }}" class="btn btn-danger">supprimer mon profil</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="panel-body d-flex flex-column gap-3">
-                        <a href="{{ path('app_user_profile_update') }}">modifier mon profil</a>
                     </div>
                 </div>
             </div>

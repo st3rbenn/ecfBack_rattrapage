@@ -41,34 +41,6 @@ class ProfileType extends AbstractType
                     'class' => 'form-control m-2',
                 ],
             ])
-            ->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'Les mots de passe doivent correspondre',
-                'required' => true,
-                'first_options' => [
-                    'label' => 'Mot de passe',
-                    'attr' => [
-                        'placeholder' => 'Renseignez votre mot de passe',
-                        'class' => 'form-control m-2',
-                        'id' => 'passsword_id',
-                    ],
-                ],
-                'second_options' => [
-                    'label' => 'Confirmation du mot de passe',
-                    'attr' => [
-                        'placeholder' => 'Confirmation du mot de passe',
-                        'class' => 'form-control m-2',
-                    ],
-                ],
-                'constraints' => [
-                    new length([
-                        'min' => 6,
-                        'max' => 255,
-                        'minMessage' => 'Votre mot de passe doit faire au moins {{ limit }} caractères',
-                        'maxMessage' => 'Votre mot de passe ne peut pas être plus long que {{ limit }} caractères',
-                    ]),
-                ]
-            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'modifier mes informations',
                 'attr' => [

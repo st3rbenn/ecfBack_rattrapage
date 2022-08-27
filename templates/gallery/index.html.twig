@@ -3,6 +3,16 @@
 {% block title %}Hello GalleryController!{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="container">
         <h1 class="text-dark mb-4 mt-4 text-center">Vos différentes g'Artlery</h1>
         <a href="{{ path('app_gallery_add') }}" class="btn btn-secondary mb-5">

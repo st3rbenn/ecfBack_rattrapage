@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Gallery::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Gallery::class, mappedBy="user", orphanRemoval=true)
      */
     private $galleries;
 

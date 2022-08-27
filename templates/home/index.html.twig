@@ -3,6 +3,16 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
     {% if is_granted("ROLE_USER") %}
     <div class="container">
         <h1 class="fs-4 text-center mt-4">Bienvenue, {{ app.user.userIdentifier }} {{ app.user.id }}</h1>
