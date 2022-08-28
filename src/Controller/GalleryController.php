@@ -25,8 +25,7 @@ class GalleryController extends AbstractController
      * @Route("/gallery", name="app_gallery")
      */
     public function index(
-        GalleryRepository $galleryRepository,
-        UserRepository $userRepository
+        GalleryRepository $galleryRepository
     ): Response
     {
         $galleries = $galleryRepository->listOfGalleries();

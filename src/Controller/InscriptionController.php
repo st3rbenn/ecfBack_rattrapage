@@ -27,7 +27,7 @@ class InscriptionController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $user->getPassword()));
             $userRepository->add($user);
             $this->addFlash('success', 'Votre compte a bien été créé');
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_login');
         }
         return $this->render('inscription/index.html.twig', [
             'RegisterForm' => $form->createView(),
