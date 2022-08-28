@@ -40,8 +40,8 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Les objets de collections', 'fa fa-file-text', GalleryItem::class),
 
             MenuItem::section('Users'),
-            /*MenuItem::linkToCrud('Comments', 'fa fa-comment', Comment::class),*/
             MenuItem::linkToCrud('Users', 'fa fa-user', User::class),
+            /*MenuItem::linkToCrud('Comments', 'fa fa-comment', Comment::class),*/
         ];
     }
 }

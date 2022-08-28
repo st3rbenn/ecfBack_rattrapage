@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Form\ProfileType;
 use App\Form\UpdatePasswordType;
 use App\Repository\UserRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,7 +92,10 @@ class UserProfileController extends AbstractController
     ): Response
     {
         $user = $userRepository->find($this->getUser());
-        $userRepository->remove($user);
+        if($userRepository->remove($user)){
+            $this->addFlash('success', 'Votre compte a bien été supprimé');
+            return $this->redirectToRoute('app_home');
+        }
 
         return $this->render('user_profile/delete.html.twig', [
             'deleteAccount' => 'deleteAccount',
