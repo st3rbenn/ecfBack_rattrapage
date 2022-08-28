@@ -5,13 +5,10 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class ProfileType extends AbstractType
@@ -40,6 +37,20 @@ class ProfileType extends AbstractType
                     'placeholder' => 'renseignez votre email',
                     'class' => 'form-control m-2',
                 ],
+            ])
+            ->add('phone', TextType::class, [
+                'label' => 'Numéro de téléphone',
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Numéro de téléphone',
+                    'class' => 'form-control m-2',
+                ],
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^\d{0,50}$/',
+                        'message' => 'Le numéro de téléphone doit pas dépasser 50 chiffres',
+                    ]),
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'modifier mes informations',

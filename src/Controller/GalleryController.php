@@ -2,15 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Gallery;
 use App\Entity\GalleryItem;
-use App\Entity\User;
+use App\Form\CommentType;
 use App\Form\GalleryItemType;
 use App\Form\GalleryType;
+use App\Repository\CommentRepository;
 use App\Repository\GalleryItemRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\UserRepository;
 use App\Service\FileUploader;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +33,7 @@ class GalleryController extends AbstractController
     {
         $galleries = $galleryRepository->listOfGalleries();
         return $this->render('gallery/index.html.twig', [
-            'galleries' => $galleries,
+            'galleries' => $galleries
         ]);
     }
 
@@ -123,17 +126,49 @@ class GalleryController extends AbstractController
     }
 
     /**
-     * @Route("/gallery/{id}", name="app_gallery_show", requirements={"id"="\d+"})
+     * @Route("/gallery/{gallery_id}", name="app_gallery_show", requirements={"id"="\d+"})
+     * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
      */
     public function showGallery(
         GalleryItemRepository $galleryItemRepository,
-        Gallery $gallery
+        GalleryItem $galleryItem,
+        GalleryRepository $galleryRepository,
+        Gallery $gallery,
+        CommentRepository $commentRepository,
+        Comment $comment,
+        ManagerRegistry $registry,
+        Request $request
     ): Response
     {
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $comment->setComment($form->get('comment')->getData());
+            $comment->setGalleryItemId($galleryItem);
+
+            dd($comment);
+        }
+
+        /*if($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+            $comment = $data['comment'];
+            $setGalleryItemID = $galleryItemRepository->find($gallery->getId());
+            $
+            dd($comment);
+            $galleryItemRepository->add($comment);
+            $registry->getManager()->flush();
+            $this->addFlash('success', 'Votre commentaire a bien été ajouté');
+        } else {
+            $this->addFlash('error', 'Erreur lors de l\'ajout du commentaire');
+        }*/
+
         $listOfArts = $galleryItemRepository->listOfGalleryItems();
+
         return $this->render('gallery/gallery_art/index.html.twig',[
             'listOfArts' => $listOfArts,
-            'gallery' => $gallery
+            'gallery' => $gallery,
+            'commentForm' => $form->createView()
         ]);
     }
 

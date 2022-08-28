@@ -25,30 +25,63 @@
                 </a>
             {% endif %}
         </div>
-        {% for g in listOfArts %}
-                <div class="card mb-4 gap-3 mb-4 mt-4 p-3">
-                    <div class="mb-3 align-self-center">
-                        <img src="{{ asset('uploads/images/' ~ g.image) }}" alt="image de l'oeuvre {{ g.name }}" class="img-fluid">
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <h2 class="text-dark">
-                            {{ g.name }}
-                        </h2>
-                        <p class="text-dark mt-3">
-                            {{ g.description }}
-                        </p>
-                    </div>
-                    {% if gallery.user == app.user %}
-                            <div class="d-flex flex-column container-sm gap-3 justify-content-center align-items-center">
-                                <a href="{{ path('app_gallery_editart', {'galleryItem_id': g.id, 'gallery_id': gallery.id}) }}" class="btn btn-warning col-9">
-                                    Modifier l'oeuvre
-                                </a>
-                                <a href="{{ path('app_gallery_delete_art', {'galleryItem_id': g.id, 'gallery_id': gallery.id}) }}" class="btn btn-danger col-9">
-                                    Supprimer l'oeuvre
-                                </a>
+        <div class="d-flex flex-row gap-2">
+            {% for g in listOfArts %}
+                {% if g.gallery.id == gallery.id %}
+                    <div class="card mb-4 gap-3 mb-4 mt-4 p-3 col-md-8 col-lg-6">
+                        <div class="mb-3 align-self-center">
+                            <img src="{{ asset('uploads/images/' ~ g.image) }}" alt="image de l'oeuvre {{ g.name }}" class="img-fluid w-auto mw-100" style="width: 250px; height:300px">
+                        </div>
+                        <div class="col-12 col-md-6 d-flex flex-row justify-content-between">
+                            <div class="col-12">
+                                <h2 class="text-dark">
+                                    {{ g.name }}
+                                </h2>
+                                <p class="text-dark mt-3">
+                                    {{ g.description }}
+                                </p>
                             </div>
-                    {% endif %}
-                </div>
-        {% endfor %}
+                            {% if gallery.user == app.user %}
+                                <div class="d-flex flex-column container-sm gap-3 justify-content-center align-items-center col-12">
+                                    <a href="{{ path('app_gallery_editart', {'galleryItem_id': g.id, 'gallery_id': gallery.id}) }}" class="btn btn-warning col-9">
+                                        Modifier l'oeuvre
+                                    </a>
+                                    <a href="{{ path('app_gallery_delete_art', {'galleryItem_id': g.id, 'gallery_id': gallery.id}) }}" class="btn btn-danger col-9">
+                                        Supprimer l'oeuvre
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card shadow-0 border" style="background-color: #f0f2f5;">
+                            <div class="card-body p-4">
+                                <div class="form-outline mb-4">
+                                    {{ form_start(commentForm) }}
+                                    {{ form_end(commentForm) }}
+                                </div>
+
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <p>Type your note, and hit enter to add it</p>
+
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex flex-row align-items-center">
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(4).webp" alt="avatar" width="25"
+                                                     height="25" />
+                                                <p class="small mb-0 ms-2">Martha</p>
+                                            </div>
+                                            <div class="d-flex flex-row align-items-center">
+                                                <p class="small text-muted mb-0">Upvote?</p>
+                                                <i class="far fa-thumbs-up mx-2 fa-xs text-black" style="margin-top: -0.16rem;"></i>
+                                                <p class="small text-muted mb-0">3</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
