@@ -126,8 +126,10 @@ class GalleryController extends AbstractController
     }
 
     /**
-     * @Route("/gallery/{gallery_id}", name="app_gallery_show", requirements={"id"="\d+"})
+     * @Route("/gallery/{gallery_id}", name="app_gallery_show")
      * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
+     * @ParamConverter("galleryItem", options={"mapping": {"gallery_id": "gallery"}})
+     * @ParamConverter("comment", options={"mapping": {"galleryItem_id": "comments"}})
      */
     public function showGallery(
         GalleryItemRepository $galleryItemRepository,
@@ -135,33 +137,26 @@ class GalleryController extends AbstractController
         GalleryRepository $galleryRepository,
         Gallery $gallery,
         CommentRepository $commentRepository,
-        Comment $comment,
         ManagerRegistry $registry,
         Request $request
     ): Response
     {
-        $form = $this->createForm(CommentType::class, $comment);
+        $form = $this->createForm(CommentType::class);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $comment->setComment($form->get('comment')->getData());
-            $comment->setGalleryItemId($galleryItem);
-
-            dd($comment);
-        }
-
-        /*if($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
-            $comment = $data['comment'];
+            $comment = $data;
             $setGalleryItemID = $galleryItemRepository->find($gallery->getId());
-            $
-            dd($comment);
+            $comment->setGalleryItem($setGalleryItemID);
+            
             $galleryItemRepository->add($comment);
+            dd($galleryItemRepository);
             $registry->getManager()->flush();
             $this->addFlash('success', 'Votre commentaire a bien été ajouté');
         } else {
             $this->addFlash('error', 'Erreur lors de l\'ajout du commentaire');
-        }*/
+        }
 
         $listOfArts = $galleryItemRepository->listOfGalleryItems();
 
