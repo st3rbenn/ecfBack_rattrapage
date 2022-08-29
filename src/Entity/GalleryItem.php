@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GalleryItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,9 +54,15 @@ class GalleryItem
      */
     private $updateAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="galleryItem_id")
+     */
+    private $comments;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->comments = new ArrayCollection();
     }
 
     public function __toString()
@@ -147,6 +155,36 @@ class GalleryItem
     public function setUpdateAt(?\DateTimeImmutable $updateAt): self
     {
         $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setGalleryItemId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getGalleryItemId() === $this) {
+                $comment->setGalleryItemId(null);
+            }
+        }
 
         return $this;
     }

@@ -31,10 +31,6 @@
                                     e-mail
                                     <input type="email" value="{{ user.email }}" class="form-control mb-2 mt-2" id="mail_id" disabled>
                                 </label>
-                                <label for="password_id" class="form-label mt-3">
-                                    mot de passe
-                                    <input type="password" value="{{ user.password }}" class="form-control mb-2 mt-2" id="password_id" disabled>
-                                </label>
                                 <div class="btn-group gap-3 justify-content-center align-items-center">
                                     <a href="{{ path('app_user_profile_update') }}" class="btn btn-primary">modifier mon profil</a>
                                     <a href="{{ path('app_user_profile_update_password') }}" class="btn btn-warning">modifier mon mot de passe</a>

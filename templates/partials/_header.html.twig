@@ -4,31 +4,31 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/">Home
+                    <a class="nav-link {% if app.request.requestUri == '/' %} active {% endif %}" href="/">Home
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_gallery') }}">Mes G'artlery</a>
+                        <a class="nav-link {% if app.request.requestUri == '/gallery' %} active {% endif %}" href="{{ path('app_gallery') }}">Mes G'artlery</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_user_profile') }}">Mon profil</a>
+                        <a class="nav-link {% if app.request.requestUri == '/user/profile' %} active {% endif %}" href="{{ path('app_user_profile') }}">Mon profil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}">se déconnecter</a>
                     </li>
                     {% if is_granted("ROLE_ADMIN") %}
-                        <li class="nav-item">
+                        <li class="nav-item {% if app.request.requestUri == '/admin' %} active {% endif %}">
                             <a class="nav-link" href="{{ path('admin') }}">Admin</a>
                         </li>
                     {% endif %}
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/connection">se connecter</a>
+                        <a class="nav-link {% if app.request.requestUri == '/' %} active {% endif %}" href="/connection">se connecter</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/inscription">s'inscrire</a>
+                        <a class="nav-link {% if app.request.requestUri == '/' %} active {% endif %}" href="/inscription">s'inscrire</a>
                     </li>
                 {% endif %}
             </ul>

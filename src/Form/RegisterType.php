@@ -41,6 +41,20 @@ class RegisterType extends AbstractType
                     'class' => 'form-control m-2',
                 ],
             ])
+            ->add('phone', TextType::class, [
+                'label' => 'Numéro de téléphone',
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Numéro de téléphone',
+                    'class' => 'form-control m-2',
+                ],
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^\d{0,50}$/',
+                        'message' => 'Le numéro de téléphone doit pas dépasser 50 chiffres',
+                    ]),
+                ]
+            ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent correspondre',
