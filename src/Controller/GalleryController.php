@@ -24,6 +24,48 @@ use Symfony\Component\Routing\Annotation\Route;
 class GalleryController extends AbstractController
 {
     /**
+     * @Route("/gallery/{gallery_id}", name="app_gallery_show")
+     * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
+     * @ParamConverter("galleryItem", options={"mapping": {"gallery_id": "gallery"}})
+     * @ParamConverter("comment", options={"mapping": {"galleryItem": "comment"}, "repository_method": "findAll"})
+     */
+    public function showGallery(
+        GalleryItemRepository $galleryItemRepository,
+        Gallery $gallery,
+        CommentRepository $commentRepository,
+        Request $request
+    ): Response
+    {
+        if($gallery->getGalleryItems()->count() !== 0){
+            $form = $this->createForm(CommentType::class);
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid()){
+                $newComment = new Comment();
+                $newComment->setComment($form->get('comment')->getData());
+                dd($form->get('comment')->getData());
+                $this->addFlash('success', 'Votre commentaire a bien été ajouté');
+            } else {
+                $this->addFlash('error', 'Erreur lors de l\'ajout du commentaire');
+            }
+            $listOfArts = $galleryItemRepository->listOfGalleryItems();
+            return $this->render('gallery/gallery_art/index.html.twig',[
+                'listOfArts' => $listOfArts,
+                'gallery' => $gallery,
+                'commentForm' => $form,
+                'comments' => $commentRepository->findByGalleryItem($gallery->getGalleryItems()->first()->getId())
+            ]);
+        }
+
+        $listOfArts = $galleryItemRepository->listOfGalleryItems();
+
+        return $this->render('gallery/gallery_art/index.html.twig',[
+            'listOfArts' => $listOfArts,
+            'gallery' => $gallery
+        ]);
+    }
+
+    /**
      * @IsGranted("ROLE_USER")
      * @Route("/gallery", name="app_gallery")
      */
@@ -126,48 +168,6 @@ class GalleryController extends AbstractController
     }
 
     /**
-     * @Route("/gallery/{gallery_id}", name="app_gallery_show")
-     * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
-     * @ParamConverter("galleryItem", options={"mapping": {"gallery_id": "gallery"}})
-     * @ParamConverter("comment", options={"mapping": {"galleryItem_id": "comments"}})
-     */
-    public function showGallery(
-        GalleryItemRepository $galleryItemRepository,
-        GalleryItem $galleryItem,
-        GalleryRepository $galleryRepository,
-        Gallery $gallery,
-        CommentRepository $commentRepository,
-        ManagerRegistry $registry,
-        Request $request
-    ): Response
-    {
-        $form = $this->createForm(CommentType::class);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-            $data = $form->getData();
-            $comment = $data;
-            $setGalleryItemID = $galleryItemRepository->find($gallery->getId());
-            $comment->setGalleryItem($setGalleryItemID);
-            
-            $galleryItemRepository->add($comment);
-            dd($galleryItemRepository);
-            $registry->getManager()->flush();
-            $this->addFlash('success', 'Votre commentaire a bien été ajouté');
-        } else {
-            $this->addFlash('error', 'Erreur lors de l\'ajout du commentaire');
-        }
-
-        $listOfArts = $galleryItemRepository->listOfGalleryItems();
-
-        return $this->render('gallery/gallery_art/index.html.twig',[
-            'listOfArts' => $listOfArts,
-            'gallery' => $gallery,
-            'commentForm' => $form->createView()
-        ]);
-    }
-
-    /**
      * @IsGranted("ROLE_USER")
      * @Route("/gallery/{id}/art/add", name="app_gallery_add_art")
      * @ParamConverter("gallery", options={"mapping": {"id": "id"}})
@@ -196,7 +196,7 @@ class GalleryController extends AbstractController
             }
 
             $this->addFlash('success', 'Votre oeuvre a bien été ajoutée');
-            return $this->redirectToRoute('app_gallery_show', ['id' => $gallery->getId()]);
+            return $this->redirectToRoute('app_gallery_show', ['gallery_id' => $gallery->getId()]);
         }
 
         return $this->render('/gallery/gallery_art/add_art.html.twig', [
@@ -234,7 +234,7 @@ class GalleryController extends AbstractController
             }
 
             $this->addFlash('success', 'Votre oeuvre a bien été modifiée');
-            return $this->redirectToRoute('app_gallery_show', ['id' => $gallery->getId()]);
+            return $this->redirectToRoute('app_gallery_show', ['gallery_id  ' => $gallery->getId()]);
         }
 
         return $this->render('/gallery/gallery_art/edit_art.html.twig', [
@@ -255,6 +255,7 @@ class GalleryController extends AbstractController
     ): Response
     {
         $galleryItemRepository->remove($galleryItem);
+        $this->addFlash('success', 'Votre oeuvre a bien été supprimée');
 
         return $this->render('/gallery/gallery_art/delete_art.html.twig',[
             'galleryItem' => $galleryItem,

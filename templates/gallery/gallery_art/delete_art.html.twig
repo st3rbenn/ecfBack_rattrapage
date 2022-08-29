@@ -3,7 +3,7 @@
 {% block body %}
     <div class="container ml-auto mr-auto min-h-screen">
         <p class="mb-8">l'oeuvre a bien été supprimé</p>
-        <meta http-equiv="refresh" content="2;url={{ path('app_gallery_show', {'id': gallery.id}) }}">
+        <meta http-equiv="refresh" content="2;url={{ path('app_gallery_show', {'gallery_id': gallery.id}) }}">
     </div>
 {% endblock %}
 

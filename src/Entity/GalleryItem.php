@@ -55,7 +55,7 @@ class GalleryItem
     private $updateAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="galleryItem_id")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="galleryItem_id", orphanRemoval=true)
      */
     private $comments;
 

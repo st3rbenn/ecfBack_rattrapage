@@ -23,7 +23,7 @@ class Comment
     private $comment;
 
     /**
-     * @ORM\ManyToOne(targetEntity=GalleryItem::class, inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity=GalleryItem::class, inversedBy="comments", cascade={"persist"})
      */
     private $galleryItem_id;
 
@@ -33,7 +33,7 @@ class Comment
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments", cascade={"persist"})
      */
     private $user;
 

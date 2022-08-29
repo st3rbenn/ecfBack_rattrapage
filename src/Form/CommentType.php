@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Comment;
+use App\Entity\GalleryItem;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,6 +33,16 @@ class CommentType extends AbstractType
                         'maxMessage' => 'Le commentaire ne doit pas dépasser {{ limit }} caractères',
                     ]),
                 ]
+            ])
+            ->add('galleryItemId', EntityType::class, [
+                'class' => GalleryItem::class,
+                'choice_label' => 'name',
+                'label' => 'Art',
+                'required' => true,
+                'attr' => [
+                    'class' => 'form-control m-2',
+                    'style' => 'display: none;',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Envoyer',
