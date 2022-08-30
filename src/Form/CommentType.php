@@ -34,23 +34,22 @@ class CommentType extends AbstractType
                     ]),
                 ]
             ])
-            ->add('galleryItemId', EntityType::class, [
-                'class' => GalleryItem::class,
-                'choice_label' => 'name',
-                'label' => 'Art',
-                'required' => true,
-                'attr' => [
-                    'class' => 'form-control m-2',
-                    'style' => 'display: none;',
-                ],
-            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Envoyer',
                 'attr' => [
                     'class' => 'btn btn-primary m-2',
                 ],
+            ])
+            ->add('galleryItemId', EntityType::class, [
+                'class' => GalleryItem::class,
+                'choice_label' => 'name',
+                'label' => ' ',
+                'required' => true,
+                'attr' => [
+                    'class' => 'form-control m-2',
+                    'style' => 'display: none;',
+                ],
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
