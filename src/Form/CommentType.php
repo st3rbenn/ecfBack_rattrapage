@@ -20,7 +20,7 @@ class CommentType extends AbstractType
         $builder
             ->add('comment', TextType::class, [
                 'label' => 'Ajouter un commentaire',
-                'required' => true,
+                'data' => '',
                 'attr' => [
                     'placeholder' => 'Commentaire',
                     'class' => 'form-control m-2',
@@ -46,7 +46,7 @@ class CommentType extends AbstractType
                 'label' => ' ',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control m-2',
+                    'class' => '',
                     'style' => 'display: none;',
                 ],
             ]);

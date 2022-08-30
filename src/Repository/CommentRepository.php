@@ -39,15 +39,9 @@ class CommentRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByGalleryItem($galleryItem): array
+    public function findByGalleryItem(): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.galleryItem_id = :val')
-            ->setParameter('val', $galleryItem)
-            ->orderBy('c.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findAll();
     }
 
 //    /**
