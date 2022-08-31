@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello GalleryController!{% endblock %}
+{% block title %}mes G'artlery{% endblock %}
 
 {% block body %}
     {% for message in app.flashes('success') %}
@@ -38,7 +38,7 @@
                                     </p>
                                 </div>
                                 <div class="btn-group">
-                                    <a href="{{ path('app_gallery_show', {'id': g.id}) }}" class="btn btn-primary">Voir la g'Artllery</a>
+                                    <a href="{{ path('app_gallery_show', {'gallery_id': g.id}) }}" class="btn btn-primary">Voir la g'Artllery</a>
                                     <a href="{{ path('app_gallery_edit', {'id': g.id}) }}" class="btn btn-warning">Modifier la g'Artllery</a>
                                     <a href="{{ path('app_gallery_delete', {'id': g.id}) }}" class="btn btn-danger">Supprimer la g'Artllery</a>
                                 </div>

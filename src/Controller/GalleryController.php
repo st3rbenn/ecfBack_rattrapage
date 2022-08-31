@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Gallery;
 use App\Entity\GalleryItem;
+use App\Entity\User;
 use App\Form\CommentType;
 use App\Form\GalleryItemType;
 use App\Form\GalleryType;
@@ -78,7 +79,7 @@ class GalleryController extends AbstractController
      * @Route("/gallery/{gallery_id}", name="app_gallery_show")
      * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
      * @ParamConverter("galleryItem", options={"mapping": {"gallery_id": "id"}})
-     * @ParamConverter("comment", options={"mapping": {"galleryItem": "comment"}, "repository_method": "findAll"})
+     * @ParamConverter("comment", options={"mapping": {"galleryItem": "comment"}})
      */
     public function showGallery(
         GalleryItemRepository $galleryItemRepository,
@@ -89,19 +90,21 @@ class GalleryController extends AbstractController
         Request $request
     ): Response
     {
-        if($gallery->getGalleryItems()->count() !== 0 && $userRepository->find($this->getUser()) !== null) {
+        if($gallery->getGalleryItems()->count() !== 0) {
             $form = $this->createForm(CommentType::class);
             $form->handleRequest($request);
-            $galleryItem = $galleryItemRepository->findOneBy(['gallery' => $gallery]);
 
             if($form->isSubmitted() && $form->isValid()){
+
                 $newComment = new Comment();
                 $newComment->setComment($form->get('comment')->getData());
-                $newComment->setGalleryItemId($galleryItem);
                 $newComment->setUser($userRepository->find($this->getUser()));
+                $newComment->setGalleryItemId($form->get('galleryItemId')->getData());
+
                 $entityManager = $managerRegistry->getManager();
                 $entityManager->persist($newComment);
                 $entityManager->flush();
+
                 $this->addFlash('success', 'Votre commentaire a bien été ajouté');
             } else {
                 $this->addFlash('error', 'Erreur lors de l\'ajout du commentaire');
@@ -111,7 +114,7 @@ class GalleryController extends AbstractController
                 'listOfArts' => $listOfArts,
                 'gallery' => $gallery,
                 'commentForm' => $form,
-                'comments' => $commentRepository->findByGalleryItem($gallery->getGalleryItems()->first()->getId())
+                'comments' => $commentRepository->findByGalleryItem()
             ]);
         }
         $listOfArts = $galleryItemRepository->listOfGalleryItems();
@@ -119,6 +122,30 @@ class GalleryController extends AbstractController
         return $this->render('gallery/gallery_art/index.html.twig',[
             'listOfArts' => $listOfArts,
             'gallery' => $gallery,
+        ]);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/gallery/{gallery_id}/{galleryItem_id}/{comment_id}", name="app_gallery_delete_comment")
+     * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
+     * @ParamConverter("galleryItem", options={"mapping": {"galleryItem_id": "id"}})
+     * @ParamConverter("comment", options={"mapping": {"comment_id": "id"}})
+     */
+    public function deleteComment(
+        Comment $comment,
+        GalleryItem $galleryItem,
+        Gallery $gallery,
+        ManagerRegistry $managerRegistry
+    ): Response
+    {
+        $entityManager = $managerRegistry->getManager();
+        $entityManager->remove($comment);
+        $entityManager->flush();
+        $this->addFlash('success', 'Votre commentaire a bien été supprimé');
+        return $this->redirectToRoute('app_gallery_show', [
+            'gallery_id' => $gallery->getId(),
+            'galleryItem_id' => $galleryItem->getId()
         ]);
     }
 
@@ -268,4 +295,5 @@ class GalleryController extends AbstractController
             'gallery' => $gallery
         ]);
     }
+
 }
