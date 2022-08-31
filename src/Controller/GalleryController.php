@@ -24,6 +24,44 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GalleryController extends AbstractController
 {
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/gallery/{id}/art/add", name="app_gallery_add_art")
+     * @ParamConverter("gallery", options={"mapping": {"id": "id"}})
+     */
+    public function addArt(
+        Gallery $gallery,
+        Request $request,
+        GalleryItemRepository $galleryItemRepository,
+        FileUploader $fileUploader
+    ): Response
+    {
+        $galleryItem = new GalleryItem();
+        $galleryItem->setGallery($gallery);
+        $form = $this->createForm(GalleryItemType::class, $galleryItem);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $galleryItemRepository->add($galleryItem);
+
+            $file = $form['image']->getData();
+            if($file){
+                $fileName = $fileUploader->upload($file);
+                $galleryItem->setImage($fileName);
+                $galleryItemRepository->add($galleryItem);
+            }
+
+            $this->addFlash('success', 'Votre oeuvre a bien été ajoutée');
+            return $this->redirectToRoute('app_gallery_show', ['gallery_id' => $gallery->getId()]);
+        }
+
+        return $this->render('/gallery/gallery_art/add_art.html.twig', [
+            'AddArtForm' => $form->createView(),
+        ]);
+    }
+
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/gallery", name="app_gallery")
@@ -202,43 +240,6 @@ class GalleryController extends AbstractController
 
     /**
      * @IsGranted("ROLE_USER")
-     * @Route("/gallery/{id}/art/add", name="app_gallery_add_art")
-     * @ParamConverter("gallery", options={"mapping": {"id": "id"}})
-     */
-    public function addArt(
-        Gallery $gallery,
-        Request $request,
-        GalleryItemRepository $galleryItemRepository,
-        FileUploader $fileUploader
-    ): Response
-    {
-        $galleryItem = new GalleryItem();
-        $galleryItem->setGallery($gallery);
-        $form = $this->createForm(GalleryItemType::class, $galleryItem);
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-            $galleryItemRepository->add($galleryItem);
-
-            $file = $form['image']->getData();
-            if($file){
-                $fileName = $fileUploader->upload($file);
-                $galleryItem->setImage($fileName);
-                $galleryItemRepository->add($galleryItem);
-            }
-
-            $this->addFlash('success', 'Votre oeuvre a bien été ajoutée');
-            return $this->redirectToRoute('app_gallery_show', ['gallery_id' => $gallery->getId()]);
-        }
-
-        return $this->render('/gallery/gallery_art/add_art.html.twig', [
-            'AddArtForm' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @IsGranted("ROLE_USER")
      * @Route("/gallery/{gallery_id}/art/{galleryItem_id}/edit") name="app_gallery_edit_art")
      * @ParamConverter("gallery", options={"mapping": {"gallery_id": "id"}})
      * @ParamConverter("galleryItem", options={"mapping": {"galleryItem_id": "id"}})
@@ -267,7 +268,10 @@ class GalleryController extends AbstractController
             }
 
             $this->addFlash('success', 'Votre oeuvre a bien été modifiée');
-            return $this->redirectToRoute('app_gallery_show', ['gallery_id  ' => $gallery->getId()]);
+            return $this->redirectToRoute('app_gallery_show', [
+                'gallery_id' => $gallery->getId(),
+                'galleryItem_id' => $galleryItem->getId()
+            ]);
         }
 
         return $this->render('/gallery/gallery_art/edit_art.html.twig', [
