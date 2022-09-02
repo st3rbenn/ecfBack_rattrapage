@@ -51,7 +51,7 @@ class GalleryType extends AbstractType
                             'image/png',
                             'image/webp'
                         ],
-                        'mimeTypesMessage' => 'Please upload a valid image',
+                        'mimeTypesMessage' => 'Merci de choisir un fichier de type jpeg, png ou webp',
                     ])
                 ],
             ])
