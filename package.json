@@ -15,6 +15,6 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress",
         "start": "symfony serve",
-        "full-install": "composer i && npm i && symfony console d:d:c && symfony console make:mig && synmfony console d:m:m && symfony serve"
+        "full-install": "composer i && npm i && symfony console d:d:c && symfony console make:mig && synmfony console d:m:m && npm build && symfony serve"
     }
 }
