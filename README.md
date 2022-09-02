@@ -13,6 +13,8 @@ ensuite il faut crée a la racine du projet un fichier .env.local et ajouté cec
 
 pensez a changer DBUSERNAME et DBPASSWORD par leurs valeurs respective
 
+hydrater la BDD a l'aide du fichier sql proposer dans le repo
+
 ensuite il ne vous restera plus qu'a lancé la commande
 `npm run full-install` ou `yarn full-install`
 
